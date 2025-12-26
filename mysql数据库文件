@@ -1,0 +1,186 @@
+-- MySQL dump 10.13  Distrib 5.7.44, for Linux (x86_64)
+--
+-- Host: localhost    Database: zhongguoxing
+-- ------------------------------------------------------
+-- Server version	5.7.44-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `yan` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `admin`
+--
+
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+INSERT INTO `admin` VALUES (17,'mydisai','$2y$10$5V8rI8rgc5YjDBlYvrtn5.HdXn0lJrd4qP5cH7mOjp6NgihsHT5jG','9da60646f78efa4a7427c65bb5a1678d');
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `base_config`
+--
+
+DROP TABLE IF EXISTS `base_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `base_config` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键，配置记录的唯一标识',
+  `year` int(11) NOT NULL COMMENT '年份',
+  `month` tinyint(4) NOT NULL COMMENT '月份',
+  `budget` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT '预算金额',
+  `task_quantity` int(11) NOT NULL DEFAULT '0' COMMENT '任务数',
+  `target_volume` int(11) NOT NULL DEFAULT '0' COMMENT '目标量',
+  `remarks` text COLLATE utf8mb4_unicode_ci COMMENT '备注',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_year_month` (`year`,`month`) COMMENT '年份和月份组合唯一约束，防止重复配置',
+  KEY `idx_year` (`year`) COMMENT '年份索引，提升按年份查询效率',
+  KEY `idx_month` (`month`) COMMENT '月份索引，提升按月份查询效率'
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='基础配置表（包含预算、任务数、目标量等核心信息）';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `base_config`
+--
+
+LOCK TABLES `base_config` WRITE;
+/*!40000 ALTER TABLE `base_config` DISABLE KEYS */;
+INSERT INTO `base_config` VALUES (5,2025,12,41788.00,403,18,'加油保优秀。'),(6,2025,11,10000.00,100,10,'');
+/*!40000 ALTER TABLE `base_config` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `business_detail`
+--
+
+DROP TABLE IF EXISTS `business_detail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `business_detail` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键，明细记录的唯一标识',
+  `year` int(11) NOT NULL COMMENT '年份',
+  `month` tinyint(4) NOT NULL COMMENT '月份（1-12）',
+  `day_of_month` tinyint(4) NOT NULL COMMENT '日期（每月1-31日）',
+  `natural_leads` int(11) DEFAULT NULL COMMENT '自然线索',
+  `ad_leads` int(11) DEFAULT NULL COMMENT '广告线索',
+  `daily_consumption` decimal(15,2) DEFAULT NULL COMMENT '当日消耗 (元)',
+  `order_quantity` int(11) DEFAULT NULL COMMENT '订单数',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_year_month_day` (`year`,`month`,`day_of_month`) COMMENT '年、月、日组合唯一约束，防止重复明细记录',
+  KEY `idx_year` (`year`) COMMENT '年份索引，提升按年份查询效率',
+  KEY `idx_month` (`month`) COMMENT '月份索引，提升按月份查询效率',
+  KEY `idx_day_of_month` (`day_of_month`) COMMENT '日期索引，提升按每月日期查询效率',
+  KEY `idx_year_month` (`year`,`month`) COMMENT '年+月联合索引，优化按年月汇总查询效率'
+) ENGINE=InnoDB AUTO_INCREMENT=154 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='业务明细表（存储年、月、日、自然线索、广告线索、当日消耗及订单数等核心明细数据）';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `business_detail`
+--
+
+LOCK TABLES `business_detail` WRITE;
+/*!40000 ALTER TABLE `business_detail` DISABLE KEYS */;
+INSERT INTO `business_detail` VALUES (93,2025,12,1,3,3,718.67,0),(94,2025,12,2,5,5,1330.68,0),(95,2025,12,3,2,10,2305.98,0),(96,2025,12,4,0,0,0.00,1),(97,2025,12,5,1,12,1199.38,1),(98,2025,12,6,1,5,831.19,0),(99,2025,12,7,1,5,892.22,0),(100,2025,12,8,0,0,0.00,0),(101,2025,12,9,6,10,1320.00,0),(102,2025,12,10,0,8,1310.00,0),(103,2025,12,11,3,0,0.00,0),(104,2025,12,12,1,1,958.30,1),(105,2025,12,13,0,7,773.35,1),(106,2025,12,14,5,10,1611.18,0),(107,2025,12,15,2,11,1537.73,0),(108,2025,12,16,3,11,1583.38,0),(109,2025,12,17,2,3,655.00,1),(110,2025,12,18,3,17,2462.00,0),(111,2025,12,19,0,16,1285.00,0),(112,2025,12,20,2,81,7997.53,0),(113,2025,12,21,3,0,610.19,0),(114,2025,12,22,3,6,1577.19,0),(115,2025,12,23,3,25,2491.89,0),(116,2025,12,24,1,44,3350.78,0),(117,2025,12,25,2,3,885.64,0),(118,2025,12,26,0,0,0.00,0),(119,2025,12,27,0,0,0.00,0),(120,2025,12,28,0,0,0.00,0),(121,2025,12,29,0,0,0.00,0),(122,2025,12,30,0,0,0.00,0),(123,2025,12,31,0,0,0.00,0),(124,2025,11,1,0,0,0.00,0),(125,2025,11,2,0,0,0.00,0),(126,2025,11,3,0,0,0.00,0),(127,2025,11,4,0,0,0.00,0),(128,2025,11,5,0,0,0.00,0),(129,2025,11,6,0,0,0.00,0),(130,2025,11,7,0,0,0.00,0),(131,2025,11,8,0,0,0.00,0),(132,2025,11,9,0,0,0.00,0),(133,2025,11,10,0,0,0.00,0),(134,2025,11,11,0,0,0.00,0),(135,2025,11,12,0,0,0.00,0),(136,2025,11,13,0,0,0.00,0),(137,2025,11,14,0,0,0.00,0),(138,2025,11,15,0,0,0.00,0),(139,2025,11,16,0,0,0.00,0),(140,2025,11,17,0,0,0.00,0),(141,2025,11,18,0,0,0.00,0),(142,2025,11,19,0,0,0.00,0),(143,2025,11,20,0,0,0.00,0),(144,2025,11,21,0,0,0.00,0),(145,2025,11,22,0,0,0.00,0),(146,2025,11,23,0,0,0.00,0),(147,2025,11,24,0,0,0.00,0),(148,2025,11,25,0,0,0.00,0),(149,2025,11,26,0,0,0.00,0),(150,2025,11,27,0,0,0.00,0),(151,2025,11,28,0,0,0.00,0),(152,2025,11,29,0,0,0.00,0),(153,2025,11,30,0,0,0.00,0);
+/*!40000 ALTER TABLE `business_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `yan` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'admin','$2y$10$39kdC4PN0/p6wkYfTu1HoOPXSLX/DVg0ZfiUtceZbO6hHB89NPeva','e2cbb4262fb6b1ee2162e37c84478e09'),(3,'myxw','$2y$10$nBYnsAatmqcoWJDG15ep4ufP7PasjVQYHSSKtuFnxMSuBF69JqjS.','6cbee81e344e3d6b5dc3bac6e710e8b2');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `write_off_node`
+--
+
+DROP TABLE IF EXISTS `write_off_node`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `write_off_node` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键，核销节点记录的唯一标识',
+  `write_off_date` date NOT NULL COMMENT '核销日期（年月日）',
+  `amount` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT '核销金额',
+  `start_date` int(11) NOT NULL COMMENT '开始日期（数字格式，1-31）',
+  `end_date` int(11) NOT NULL COMMENT '结束日期（数字格式，1-31）',
+  `base_config_id` bigint(20) NOT NULL COMMENT '关联基础配置表base_config的主键ID',
+  PRIMARY KEY (`id`),
+  KEY `idx_base_config_id` (`base_config_id`) COMMENT '关联基础配置表索引，提升关联查询效率',
+  KEY `idx_write_off_date` (`write_off_date`) COMMENT '核销日期索引，提升按核销日期查询效率',
+  KEY `idx_date_range` (`start_date`,`end_date`) COMMENT '开始日期+结束日期联合索引，优化范围查询效率',
+  CONSTRAINT `fk_write_off_base_config` FOREIGN KEY (`base_config_id`) REFERENCES `base_config` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='核销节点表（存储核销金额、日期数字范围及关联基础配置信息）';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `write_off_node`
+--
+
+LOCK TABLES `write_off_node` WRITE;
+/*!40000 ALTER TABLE `write_off_node` DISABLE KEYS */;
+INSERT INTO `write_off_node` VALUES (17,'2025-12-17',10588.00,6,16,5),(18,'2025-12-31',25600.00,17,31,5),(19,'2025-12-26',1.00,1,1,6);
+/*!40000 ALTER TABLE `write_off_node` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping events for database 'zhongguoxing'
+--
+
+--
+-- Dumping routines for database 'zhongguoxing'
+--
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-12-26 16:33:39
